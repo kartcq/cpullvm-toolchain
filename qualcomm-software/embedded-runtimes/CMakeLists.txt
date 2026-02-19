@@ -423,6 +423,12 @@ if(C_LIBRARY STREQUAL picolibc)
         set(picolibc_opt_flags "-Os")
     endif()
 
+    if(NOT VARIANT MATCHES riscv)
+        set(picolibc_tls_model initial-exec)
+    else()
+        set(picolibc_tls_model local-exec)
+    endif()
+
     # Set meson_c_args to a comma-separated list of the clang path
     # and flags e.g. 'path/to/clang', '--target=armv6m-none-eabi',
     # '-march=armv6m'
@@ -466,6 +472,7 @@ if(C_LIBRARY STREQUAL picolibc)
             -Dcpp_args=${picolibc_opt_flags}
             -Dtests-enable-stack-protector=false
             -Dtest-machine=${TEST_EXECUTOR}
+            -Dtls-model=${picolibc_tls_model}
             -Dtests=false
             --prefix <INSTALL_DIR>
             --cross-file ${CMAKE_CURRENT_BINARY_DIR}/meson-cross-build.txt
